@@ -1,0 +1,105 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+namespace beolvasas
+{
+    class Szemely
+    {
+        public int Sorszam { get; set; }
+        public string Nev { get; set; }
+        public int Kor { get; set; }
+
+        public Szemely(int sorszam, string nev, int kor)
+        {
+            Sorszam = sorszam;
+            Nev = nev;
+            Kor = kor;
+        }
+
+        public override string ToString()
+        {
+            return $"Sorszám: {Sorszam}, Név: {Nev}, Kor: {Kor}";
+        }
+
+    }
+
+    class Program
+    {
+        //legidosebb szemely
+        static Szemely Legidosebb(List<Szemely> szemelyek)
+        {
+            return szemelyek.OrderByDescending(s => s.Kor).First();
+        }
+        //legfiatalabb szemely
+        static Szemely legfiatalabb(List<Szemely> szemelyek)
+        {
+            return szemelyek.OrderBy(sz => sz.Kor).First();
+        }
+        //Nagy ELemer keresese
+        static Szemely KeresesNevSzerint(List<Szemely> szemelyek, string nev)
+        {
+            return szemelyek.FirstOrDefault(s => s.Nev == nev);
+        }
+        //a neve "ő-re" végződik
+        static List<Szemely> ovege(List<Szemely> szemelyek)
+        {
+            return szemelyek.Where(s => s.Nev.EndsWith("ő")).ToList();
+        }
+        //akinek a sorszáma 5 
+        static List<Szemely> jel(List<Szemely> szemelyek)
+        {
+            return szemelyek.Where(s => s.Nev.StartsWith("J")).ToList();
+        }
+        static void Main(string[] args)
+        {
+            string adat = "adat.txt";
+            List<Szemely> szemelyek = new List<Szemely>();
+
+
+            {
+                string[] lines = File.ReadAllLines(adat);
+
+                for (int i = 1; i < lines.Length; i++)
+                {
+                    string[] b = lines[i].Split('\t');
+
+                    int sorszam = int.Parse(b[0]);
+                    string nev = b[1];
+                    int kor = int.Parse(b[2]);
+
+                    Szemely szemely = new Szemely(sorszam, nev, kor);
+                    szemelyek.Add(szemely);
+                }
+
+                foreach (var szemely in szemelyek)
+                {
+                    Console.WriteLine(szemely);
+                }
+
+                Console.WriteLine("Legidősebb személy:");
+                Console.WriteLine(Legidosebb(szemelyek));
+                Console.WriteLine("A legfiatalabb személy:");
+                Console.WriteLine(legfiatalabb(szemelyek));
+
+                Console.WriteLine("\nNagy Elemér:");
+                Console.WriteLine(KeresesNevSzerint(szemelyek, "Nagy Elemér"));
+
+                Console.WriteLine("Akinek a neve ő-re végződik: ");
+                Console.WriteLine("\nNeve 'ő' betűre végződik:");
+                foreach (var szemely in ovege(szemelyek))
+                {
+                    Console.WriteLine(szemely);
+                }
+
+                Console.WriteLine("Akinek a neve j-vel kezdődik: ");
+                Console.WriteLine("\nNeve 'j' betüvel kezdődik");
+                foreach (var szemely in jel(szemelyek))
+                {
+                    Console.WriteLine(szemely);
+                }
+                Console.ReadKey();
+            }
+        }
+    }
+}
