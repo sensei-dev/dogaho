@@ -1,0 +1,21 @@
+// 1. Hány olyan autó van, ami drágább mint 5m Ft?
+$draga_autok_lekeres = mysqli_query($conn, "SELECT COUNT(*) as count FROM cars WHERE ar > 5000000");
+$draga_autok_szama = mysqli_fetch_assoc($draga_autok_lekeres)['count'];
+echo "Drágább autók száma: " . $draga_autok_szama . PHP_EOL;
+
+// 2. Melyik autómárka kezdődik 'A' karakterrel és 'i'-re végződik?
+$a_markak_lekeres = mysqli_query($conn, "SELECT marka FROM cars WHERE marka LIKE 'A%i'");
+$a_markak = mysqli_fetch_all($a_markak_lekeres, MYSQLI_ASSOC);
+echo "Autómárkák, amik 'A'-val kezdődnek és 'i'-re végződnek: ";
+foreach ($a_markak as $marka) {
+    echo $marka['marka'] . " ";
+}
+echo PHP_EOL;
+
+// 3. Átlagosan mennyibe kerülnek ezek az autók?
+$draga_autok_ar_lekeres = mysqli_query($conn, "SELECT AVG(ar) as avg_price FROM cars WHERE ar > 5000000");
+$atlag_ar = mysqli_fetch_assoc($draga_autok_ar_lekeres)['avg_price'];
+echo "Átlagos ár a drágább autók között: " . ($atlag_ar ? $atlag_ar : 0) . " Ft" . PHP_EOL;
+
+mysqli_close($conn);
+?>
