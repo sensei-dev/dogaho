@@ -1,0 +1,106 @@
+unittest1.cs : 
+
+using NUnit.Framework;
+using AdvancedFunctions;
+
+namespace UnitTest
+{
+    [TestFixture]
+    public class UnitTest1
+    {
+        [SetUp]
+        public void SetUp()
+        {
+        }
+
+        [Test]
+        public void Fibonacci()
+        {
+            int n = 3;
+            int ndik = Feladat.GetFibonacci(n);
+            Assert.AreEqual(1, ndik);
+        }
+        [Test]
+        public void WordFrequency_Counts()
+        {
+            var result = Feladat.WordFrequency("hello world hello");
+
+            Assert.AreEqual(2, result["hello"]);
+            Assert.AreEqual(1, result["world"]);
+        }
+        [Test]
+        public void IsAnagram()
+        {
+            Assert.IsTrue(Feladat.IsAnagram("listen", "silent"));
+            Assert.IsFalse(Feladat.IsAnagram("hello", "world"));
+            Assert.IsFalse(Feladat.IsAnagram(null, "world"));
+        }
+    }
+}
+
+class1.cs : 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace AdvancedFunctions
+{
+    public class Feladat
+    {
+
+        // 1. feladat: GetFibonacci(int n)
+        public static int GetFibonacci(int n)
+        {
+            int elso = 0;
+            int masodik = 1;
+            if (n > 1)
+            {
+                for (int i = 2; i <= n; i++)
+                {
+                    int temp = elso + masodik;
+                    elso = masodik;
+                    masodik = temp;
+                }
+                return masodik;
+
+
+            }
+            else
+            {
+                return elso;
+            }
+        }
+
+        // 2. feladat:  WordFrequency(string text)
+        public static Dictionary<string, int> WordFrequency(string text)
+        {
+
+            var words = text.Split(new[] { ' ', '\t', '\n', '\r', '.', ',', ';', '!' });
+            var wordCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var word in words)
+            {
+                if (wordCounts.ContainsKey(word))
+                    wordCounts[word]++;
+                else
+                    wordCounts[word] = 1;
+            }
+
+            return wordCounts;
+        }
+
+        // 3. feladat :IsAnagram(string szo1, string szo2)
+        public static bool IsAnagram(string szo1, string szo2)
+        {
+            if (szo1 == null || szo2 == null) return false;
+
+            var sortedszo1 = new string(szo1.ToLower().OrderBy(c => c).ToArray());
+            var sortedszo2 = new string(szo2.ToLower().OrderBy(c => c).ToArray());
+
+            return sortedszo1 == sortedszo2;
+        }
+
+        
+    }
+}
+
