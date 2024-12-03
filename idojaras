@@ -1,0 +1,169 @@
+using System;
+using System.Collections.Generic;
+
+
+namespace idojaras_doga_1112
+{
+    ///idojaras interfesz letrehozasa 
+    public interface IWeather
+    {
+        double GetTemperature();
+        double GetHumidity();
+        double GetWindSpeed();
+        double GetWeatherCondition();
+    }
+    // absztrakt osztaly letrehozasa a WeatherService osztalynak
+    public abstract class WeatherService
+    {
+        private double tempereture;
+        private string weathercondition;
+
+        public double Hofok { get; set; }
+        public double Para { get; set; }
+        public double Szelsebesseg { get; set; }
+        public double WeatherCondition { get; set; }
+        public string Varos { get; set; }
+        public WeatherService(double hofok, double para, double szelsebesseg, double weathercondition, string varos) : base()
+        {
+            Varos = varos;
+            Hofok = hofok;
+            Para = para;
+            Szelsebesseg = szelsebesseg;
+            WeatherCondition = weathercondition;
+        }
+        //publickus osztaly a weatherservicenek, , ertekek atadasa. 
+        public WeatherService(string varos, double tempereture, double para, double szelsebesseg, string weathercondition)
+        {
+            Varos = varos;
+            this.tempereture = tempereture;
+            Para = para;
+            Szelsebesseg = szelsebesseg;
+            this.weathercondition = weathercondition;
+        }
+
+        public double GetTemperature()
+        {
+            return Hofok;
+        }
+        public double GetHumidity()
+        {
+            return Para;
+        }
+        public double GetWindSpeed()
+        {
+            return Szelsebesseg;
+        }
+        public double GetWeatherCondition()
+        {
+            return WeatherCondition;
+        }
+        public abstract void idojarasinfok(IWeather idojaras);
+    }
+
+    public class CityWeather : WeatherService
+    {
+        public string varos { get; set; }
+        public CityWeather(string varos, double tempereture, double para, double szelsebesseg, string weathercondition) : base(varos, tempereture, para, szelsebesseg, weathercondition)
+        {
+            this.varos = varos;
+        }
+        public override void idojarasinfok(IWeather idojaras)
+        {
+            Console.WriteLine($"{varos} időjárása: ");
+            Console.WriteLine($"A jelenlegi Hőmérséklet: {idojaras.GetTemperature()}°C fok !");
+            Console.WriteLine($"A jelenlegi páratartalom: {idojaras.GetHumidity()} % !");
+            Console.WriteLine($"A jelenlegi szél sebessége: {idojaras.GetWindSpeed()} km/h !");
+            Console.WriteLine($"A jelenlegi időjárás állapota:  {idojaras.GetWeatherCondition()} ! ");
+        }
+    }
+    public class ForecastWeather : WeatherService
+    {
+        public string varos { get; set; }
+        public ForecastWeather(string varos, double tempereture, double para, double szelsebesseg, string weathercondition) : base(varos, tempereture, para, szelsebesseg, weathercondition)
+        {
+            this.varos = varos;
+        }
+        public override void idojarasinfok(IWeather idojaras)
+        {
+            Console.WriteLine($"{varos} falu / város időjárás előrejelzése ");
+            Console.WriteLine($"A jelenlegi Hőmérséklet: {idojaras.GetTemperature()}°C fok! ");
+            Console.WriteLine($"A Páratartalom: {idojaras.GetHumidity()}% ! ");
+            Console.WriteLine($"A Szélsebesség: {idojaras.GetWindSpeed()} km/h ! ");
+            Console.WriteLine($"A Időjárás állapota: {idojaras.GetWeatherCondition()}");
+            Console.WriteLine(" ");
+        }
+    }
+    public class Varos
+    {
+        public string varos;
+        public WeatherService varos2;
+        public WeatherService forecast2;
+        public Varos(string varos, WeatherService varos2, WeatherService forecast2)
+        {
+            this.varos = varos;
+            this.varos2 = varos2;
+            this.forecast2 = forecast2;
+        }
+    }
+
+    internal class Program
+    {
+        static List<Varos> varosok = new List<Varos>();
+        static WeatherService varos2;
+        static WeatherService forecast2;
+        static public void Listvarosok()
+        {
+            Console.WriteLine("Az összes város / falu  : ");
+            foreach (var varos in varosok)
+            {
+                Console.WriteLine($"\t{varos.varos}");
+            }
+            Console.WriteLine();
+        }
+        static void Main(string[] args)
+        {
+            Console.WriteLine("A városok / falvak időjárásai ");
+// varosok hozzaadasa 
+           forecast2 = new ForecastWeather("Fehérgyarmat", 5, 20, 45, "Hideg");
+            varos2 = new CityWeather("Fehérgyarmat", 5, 20, 45, "Hideg");
+
+            varosok.Add(new Varos("Fehérgyarmat", forecast2, varos2));
+
+            forecast2 = new ForecastWeather("Penyige", 3, 15, 45, "Hideg");
+            varos2 = new CityWeather("Penyige", 3, 15, 45, "Hideg");
+
+            varosok.Add(new Varos("Penyige", forecast2, varos2));
+
+            forecast2 = new ForecastWeather("Kisar", 4, 25, 41, "Hideg");
+            varos2 = new CityWeather("Kisar", 4, 25, 41, "Hideg");
+
+            varosok.Add(new Varos("Kisar", forecast2, varos2));
+
+//
+//varosk lekerdezese 
+            foreach (var s in varosok)
+            {
+                bool run = true;
+                while (run)
+                {
+                    Listvarosok();
+                    Console.WriteLine($"[1]\t {s.varos} időjárása");
+                    Console.WriteLine($"[2]\t{s.varos} előrejelzése");
+                    if (varosok[varosok.Count - 1].varos != s.varos)
+                        Console.WriteLine("[3]\tKövetkező város");
+                    string valaszok = Console.ReadLine();
+                    //switch blokk,
+                    switch (valaszok)
+                    {
+
+                       
+
+                    }
+
+
+                }
+
+            }
+        }
+    }
+}
