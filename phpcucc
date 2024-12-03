@@ -1,0 +1,71 @@
+<?php
+$databaseHost = '127.0.0.1';
+$databaseUsername = 'root';
+$databasePassword = '';
+$databaseName = 'books';
+try {
+$conn = mysqli_connect(hostname: $databaseHost, username: $databaseUsername,  password: $databasePassword, database: $databaseName);
+} catch (Exception $e) {
+
+    $e->getMessage() . PHP_EOL ;
+}
+finally{
+    echo'Sikeres csatlakozás! '. PHP_EOL .PHP_EOL;
+}
+// 1. feladat: Listázd ki az összes könyvet cím, szerző és év szerint 
+echo "1. feladat: Összes könyv listázása az adatbázisból . ".PHP_EOL;
+$sql = "SELECT title, author, year FROM books";
+$result = $conn->query(query: $sql);
+if ($result->num_rows > 0) {
+    echo "" .PHP_EOL;
+    while ($row = $result->fetch_assoc()) {
+        echo "Cím: " . $row["title"] . ", Szerző: " . $row["author"] . ", Megjelenési éve : " . $row["year"] . PHP_EOL;
+    }
+    echo "";
+}
+// 2. feladat: Írd ki azoknak a könyveknek a címét és évét, amelyeket egy konkrét szerző írt. A szerző neve legyen egy változóban tárolva.
+$szerzo =  "George Orwell"; // Példa szerző
+$lekerdzes = mysqli_query($conn, "SELECT title, year FROM books ");
+echo "Könyvek amelyeket $szerzo irt  : ".PHP_EOL;
+while ($row = $result->fetch_assoc()) {
+    echo "Cím: " . $row["title"] . ", Szerző: " . $row["year"] . " ";
+}
+
+
+// 3. feladat: Találd meg az adatbázisban lévő legrégebbi megjelenésű könyvet! 
+
+echo "Az adatbázisban szereplő legrégebbi könyv:".PHP_EOL;
+$sql = "SELECT title, author, year FROM books ORDER BY year ASC LIMIT 1";
+$result = $conn->query($sql);
+    $row = $result->fetch_assoc();
+    echo "Cím: " . $row["title"] . ", A könyv szerzője " . $row["author"] .PHP_EOL;
+
+// 4.feladat:  Írd ki azoknak a könyveknek a címét és szerzőjét, amelyek 1950 után jelentek meg! 
+echo "1950 után megjelent könyvek az adatbázisban: " .PHP_EOL;
+$sql = "SELECT title, author FROM books WHERE year > 1950";
+$result = $conn->query($sql);
+if ($result->num_rows > 0) {
+    echo "";
+    while ($row = $result->fetch_assoc()) {
+        echo "Cím: " . $row["title"] . ", Szerző: " . $row["author"] . " ";
+    }
+    echo "";
+
+
+} 
+
+//5. feladat: Készits egy PHP SZKRIPTET amely beszúr egy új könyvet, az adatbázisban.
+
+$ujcim = "Brave New World";
+$ujszerzo = "Aldous Huxley";
+$ujev = 1932;
+
+echo "Új könyv hozzáadása:";
+$sql = "INSERT INTO books (title, author, year) VALUES (?, ?, ?)";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ssi", $ujcim, $ujszerzo, $ujev);
+if ($stmt->execute()) {
+    echo "Új könyv sikeresen hozzáadva.";
+} 
+$stmt->close();
+?>
