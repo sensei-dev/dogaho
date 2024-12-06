@@ -1,0 +1,73 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace osszefoglalas
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+            List<int> numbers = new List<int> { 1, 2, 3, 4, 5, 6 };
+            var paratlanok = numbers.Where(n => n % 2 == 0).ToList();
+            paratlanok.ForEach(n => listBox1.Items.Add(n));
+
+
+            List<string> names = new List<string> { "Anna", "Béla", "Cecilía", "Attila" };
+            var sortedNames = names.OrderBy(name => name).ToList();
+            var eredmeny1 = names.Where(i => i[i.Length - 1] == 'a').OrderBy(i => i).ToList();
+            eredmeny1.ForEach(i => listBox2.Items.Add(i));
+
+
+            List<int> szamok = new List<int> { 10, 15, 20, 25, 30 };
+            var szamoka = szamok.Where(x => x % 5 == 0 && x % 10 != 0).ToList();
+            szamoka.ForEach(i => listBox3.Items.Add(i));
+
+            List<string> animals = new List<string> { "kutya", "macska", "kígyó", "kecske", "mókus" };
+            var groupedAnimals = animals.GroupBy(animal => animal[0]);
+            foreach (var group in groupedAnimals)
+            {
+                listBox4.Items.Add($"Csoport: {group.Key}");
+                foreach (var animal in group)
+                {
+                    listBox4.Items.Add($" {animal}");
+                }
+            }
+
+            List<string> words = new List<string> { "alma", "banán", "citrom" };
+            var wordLengths = words.Select(word => new { Szó = word, Hossz = word.Length }).ToList();
+            wordLengths.ForEach(item => Console.WriteLine($"{item.Szó}: {item.Hossz} karakter"));
+            wordLengths.ForEach(i => listBox5.Items.Add(i));
+
+            //lista letrehozasa, 10db egesz szam 3szamjegyu, hanyas szazas van benne, ketszazas, haromsazas stb. listbox6ba  
+
+            List<int> nagyszamok = new List<int> { 141, 156, 266, 278, 313, 456, 432, 561, 586, 678 };
+            var szazasrend = nagyszamok.Select(szam => new
+            {
+                Szam = szam,
+                szazasrend = (szam / 100) * 100 
+            }).GroupBy(item => item.szazasrend).OrderBy(group => group.Key).ToList();
+            szazasrend.ForEach(group =>
+            {
+                listBox6.Items.Add($"Százasrend: {group.Key}, Számok: {string.Join(", ", group.Select(item => item.Szam))}");
+            });
+
+
+
+
+
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
