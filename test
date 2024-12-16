@@ -1,0 +1,130 @@
+// Implementáció: Programozási tételek függvényei
+public class ProgrammingTasks
+{
+    // Összegzés tétele: Egy tömb elemeinek összege
+    public int Sum(int[] numbers)
+    {
+        int sum = 0;
+        foreach (var number in numbers)
+        {
+            sum += number;
+        }
+        return sum;
+    }
+
+    // Minimum keresés tétele: A legkisebb elem keresése
+    public int FindMinimum(int[] numbers)
+    {
+        if (numbers == null || numbers.Length == 0)
+            throw new ArgumentException("The array must not be null or empty.");
+
+        int min = numbers[0];
+        foreach (var number in numbers)
+        {
+            if (number < min)
+                min = number;
+        }
+        return min;
+    }
+
+    // Eldöntés tétele: Van-e pozitív szám a tömbben
+    public bool ContainsPositive(int[] numbers)
+    {
+        foreach (var number in numbers)
+        {
+            if (number > 0)
+                return true;
+        }
+        return false;
+    }
+
+    // Maximum keresés tétele: A legnagyobb elem keresése
+    public int FindMaximum(int[] numbers)
+    {
+        if (numbers == null || numbers.Length == 0)
+            throw new ArgumentException("The array must not be null or empty.");
+
+        int max = numbers[0];
+        foreach (var number in numbers)
+        {
+            if (number > max)
+                max = number;
+        }
+        return max;
+    }
+
+    // Megszámlálás tétele: Páros számok megszámlálása
+    public int CountEvenNumbers(int[] numbers)
+    {
+        int count = 0;
+        foreach (var number in numbers)
+        {
+            if (number % 2 == 0)
+                count++;
+        }
+        return count;
+    }
+}
+
+// NUnit tesztelés
+using NUnit.Framework;
+
+[TestFixture]
+public class ProgrammingTasksTests
+{
+    private ProgrammingTasks _tasks;
+
+    [SetUp]
+    public void Setup()
+    {
+        _tasks = new ProgrammingTasks();
+    }
+
+    [Test]
+    public void Sum_ShouldReturnCorrectSum()
+    {
+        int[] numbers = { 1, 2, 3 };
+        int result = _tasks.Sum(numbers);
+        Assert.AreEqual(6, result);
+    }
+
+    [Test]
+    public void FindMinimum_ShouldReturnSmallestElement()
+    {
+        int[] numbers = { 3, 5, 7 };
+        int result = _tasks.FindMinimum(numbers);
+        Assert.Less(result, 5);
+    }
+
+    [Test]
+    public void ContainsPositive_ShouldReturnFalseForAllNegativeNumbers()
+    {
+        int[] numbers = { -1, -2, -3 };
+        bool result = _tasks.ContainsPositive(numbers);
+        Assert.IsFalse(result);
+    }
+
+    [Test]
+    public void ContainsPositive_ShouldReturnTrueForPositiveNumbers()
+    {
+        int[] numbers = { -1, 2, -3 };
+        bool result = _tasks.ContainsPositive(numbers);
+        Assert.IsTrue(result);
+    }
+
+    [Test]
+    public void FindMaximum_ShouldReturnGreatestElement()
+    {
+        int[] numbers = { 3, 5, 7 };
+        int result = _tasks.FindMaximum(numbers);
+        Assert.Greater(result, 5);
+    }
+
+    [Test]
+    public void CountEvenNumbers_ShouldReturnCorrectCount()
+    {
+        int[] numbers = { 1, 2, 3, 4 };
+        int result = _tasks.CountEvenNumbers(numbers);
+        Assert.AreEqual(2, result);
+    }
+}
