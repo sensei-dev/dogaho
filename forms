@@ -1,0 +1,113 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
+
+namespace WinFormsLINQApp
+{
+    public partial class MainForm : Form
+    {
+        private List<Product> products;
+
+        public MainForm()
+        {
+            InitializeComponent();
+            InitializeProducts();
+            BindDataToGrid();
+        }
+
+        // Termékek inicializálása
+        private void InitializeProducts()
+        {
+            products = new List<Product>
+            {
+                new Product { Id = 1, Name = "Laptop", Category = "Electronics", Price = 1500 },
+                new Product { Id = 2, Name = "Smartphone", Category = "Electronics", Price = 800 },
+                new Product { Id = 3, Name = "Table", Category = "Furniture", Price = 200 },
+                new Product { Id = 4, Name = "Chair", Category = "Furniture", Price = 100 },
+                new Product { Id = 5, Name = "Headphones", Category = "Electronics", Price = 150 },
+                new Product { Id = 6, Name = "Notebook", Category = "Stationery", Price = 5 }
+            };
+        }
+
+        // Adatok megjelenítése DataGridView-ben
+        private void BindDataToGrid()
+        {
+            dataGridView1.DataSource = null;
+            dataGridView1.DataSource = products;
+        }
+
+        // Szűrés név alapján
+        private void btnFilter_Click(object sender, EventArgs e)
+        {
+            string filterText = textBoxFilter.Text.ToLower();
+            var filteredProducts = products
+                .Where(p => p.Name.ToLower().Contains(filterText))
+                .ToList();
+            dataGridView1.DataSource = filteredProducts;
+        }
+
+        // Kategória szerinti csoportosítás
+        private void btnGroupByCategory_Click(object sender, EventArgs e)
+        {
+            var groupedProducts = products
+                .GroupBy(p => p.Category)
+                .Select(g => new
+                {
+                    Category = g.Key,
+                    Products = string.Join(", ", g.Select(p => p.Name))
+                })
+                .ToList();
+
+            listBoxCategories.Items.Clear();
+            foreach (var group in groupedProducts)
+            {
+                listBoxCategories.Items.Add($"{group.Category}: {group.Products}");
+            }
+        }
+
+        // Legdrágább termék megjelenítése
+        private void btnMostExpensive_Click(object sender, EventArgs e)
+        {
+            var mostExpensiveProduct = products
+                .OrderByDescending(p => p.Price)
+                .FirstOrDefault();
+
+            if (mostExpensiveProduct != null)
+            {
+                labelMostExpensive.Text = $"Legdrágább: {mostExpensiveProduct.Name} - {mostExpensiveProduct.Price:C}";
+            }
+        }
+
+        // Átlagár kiszámítása
+        private void btnAveragePrice_Click(object sender, EventArgs e)
+        {
+            var averagePrice = products.Average(p => p.Price);
+            labelAveragePrice.Text = $"Átlagár: {averagePrice:C}";
+        }
+    }
+}
+
+
+Fontos lépések:
+Form tervezése:
+
+Hozz létre egy DataGridView (dataGridView1),
+ TextBox (textBoxFilter),
+ Button (btnFilter),
+ ListBox (listBoxCategories), 
+Label (labelMostExpensive, labelAveragePrice) 
+
+és Button-okat a megfelelő nevekkel.
+A gombok eseményeit 
+kösd hozzá az egyes funkciókhoz, például a btnFilter_Click-hez a szűréshez.
+Adatok megjelenítése és működtetése:
+
+Az alkalmazás inicializálása után a felhasználó megadhat egy szöveget a textBoxFilter-be, és a szűrés gombra kattintva a dataGridView1-en megjelennek azok a termékek, amelyek neve tartalmazza a keresett szót.
+Csoportosítás és legdrágább termék:
+
+A kategóriák szerint történő csoportosítás egy listában (listBoxCategories) történik.
+A legdrágább termék a labelMostExpensive címkén jelenik meg.
+Átlagár:
+
+Az összes termék átlagárát a btnAveragePrice_Click gomb segítségével számolja ki és jeleníti meg.
