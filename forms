@@ -111,3 +111,72 @@ A legdrágább termék a labelMostExpensive címkén jelenik meg.
 Átlagár:
 
 Az összes termék átlagárát a btnAveragePrice_Click gomb segítségével számolja ki és jeleníti meg.
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
+
+namespace WinFormsLINQApp
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+            List<Product> products = new List<Product>
+            {
+                new Product { Id = 1, Name = "Laptop", Category = "Electronics", Price = 1500 },
+                new Product { Id = 2, Name = "Smartphone", Category = "Electronics", Price = 800 },
+                new Product { Id = 3, Name = "Table", Category = "Furniture", Price = 200 },
+                new Product { Id = 4, Name = "Chair", Category = "Furniture", Price = 100 },
+                new Product { Id = 5, Name = "Headphones", Category = "Electronics", Price = 150 },
+                new Product { Id = 6, Name = "Notebook", Category = "Stationery", Price = 5 }
+            };
+
+            // 1. Termékek megjelenítése DataGridView-ben
+            dataGridView1.DataSource = products;
+
+            // 2. Szűrés név alapján
+            var filteredProducts = products.Where(p => p.Name.Contains("Phone")).ToList();
+            filteredProducts.ForEach(p => listBox1.Items.Add(p.Name));
+
+            // 3. Kategória szerinti csoportosítás
+            var groupedByCategory = products.GroupBy(p => p.Category);
+            foreach (var group in groupedByCategory)
+            {
+                listBox2.Items.Add($"Kategória: {group.Key}");
+                foreach (var product in group)
+                {
+                    listBox2.Items.Add($"  {product.Name}");
+                }
+            }
+
+            // 4. Legdrágább termék lekérdezése
+            var mostExpensiveProduct = products.OrderByDescending(p => p.Price).First();
+            labelMostExpensive.Text = $"Legdrágább termék: {mostExpensiveProduct.Name} - {mostExpensiveProduct.Price:C}";
+
+            // 5. Átlagár kiszámítása
+            var averagePrice = products.Average(p => p.Price);
+            labelAveragePrice.Text = $"Átlagár: {averagePrice:C}";
+
+            // 6. Termékek szűrése ártartomány alapján
+            var priceFilteredProducts = products.Where(p => p.Price >= 100 && p.Price <= 800).ToList();
+            priceFilteredProducts.ForEach(p => listBox3.Items.Add(p.Name));
+        }
+
+        // Event handler (nem szükséges változtatni, ha nem használod)
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e) { }
+    }
+
+    // Product osztály a termékekhez
+    public class Product
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Category { get; set; }
+        public float Price { get; set; }
+    }
+}
+
